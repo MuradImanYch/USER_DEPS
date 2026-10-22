@@ -1,4 +1,6 @@
-﻿using USER_DEPS.Dto.Department;
+﻿using Microsoft.EntityFrameworkCore;
+using USER_DEPS.Data;
+using USER_DEPS.Dto.Department;
 using USER_DEPS.Entity;
 using USER_DEPS.Repositories;
 
@@ -6,17 +8,26 @@ namespace USER_DEPS.Services
 {
     public class DepartmentService : IDepartmentService
     {
+        private readonly AppDbContext _context;
         private readonly IRepository<Department> _repository;
 
-        public DepartmentService(IRepository<Department> repository)
+        public DepartmentService(
+            AppDbContext context,
+            IRepository<Department> repository)
         {
+            _context = context;
             _repository = repository;
         }
 
+
         public async Task<List<Department>> GetAllAsync()
         {
-            return await _repository.GetAllAsync();
+            return await _context.Departments
+                .Include(d => d.Personals)
+                .AsNoTracking()
+                .ToListAsync();
         }
+
 
         public async Task<Department?> GetByIdAsync(int id)
         {

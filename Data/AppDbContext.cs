@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿
+using Microsoft.EntityFrameworkCore;
 using USER_DEPS.Entity;
 
 namespace USER_DEPS.Data
@@ -33,6 +34,11 @@ namespace USER_DEPS.Data
                 entity.Property(x => x.FatherName)
                     .IsRequired()
                     .HasMaxLength(100);
+
+                entity.HasOne(x => x.Department)
+                    .WithMany(x => x.Personals)
+                    .HasForeignKey(x => x.DepartmentId)
+                    .OnDelete(DeleteBehavior.Restrict);
 
                 entity.HasOne(x => x.User)
                     .WithOne(x => x.Personal)

@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using USER_DEPS.Dto.Personal;
-using USER_DEPS.Entity;
-using USER_DEPS.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using USER_DEPS.Services;
 
 namespace USER_DEPS.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class PersonalController : ControllerBase
@@ -61,12 +61,19 @@ namespace USER_DEPS.Controllers
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var result = await _service.DeleteAsync(id);
+            try
+            {
+                var result = await _service.DeleteAsync(id);
 
-            if (!result)
-                return NotFound(new { message = "Personal tapılmadı." });
+                if (!result)
+                    return NotFound(new { message = "Personal tapılmadı." });
 
-            return NoContent();
+                return NoContent();
+            }
+            catch (InvalidOperationException ex)
+            {
+                return StatusCode(403, new { message = ex.Message });
+            }
         }
     }
 }

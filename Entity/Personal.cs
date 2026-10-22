@@ -1,4 +1,5 @@
-﻿namespace USER_DEPS.Entity
+﻿
+namespace USER_DEPS.Entity
 {
     public class Personal
     {
@@ -9,6 +10,10 @@
         public string Surname { get; set; } = string.Empty;
 
         public string FatherName { get; set; } = string.Empty;
+
+        public int DepartmentId { get; set; }
+
+        public Department? Department { get; set; }
 
         public User? User { get; set; }
     }
